@@ -5,9 +5,9 @@ mod stack {
     use dsa_in_rust::linear::stack::*;
 
     #[test]
-    fn size_of_new_stack_is_zero() {
+    fn len_of_new_stack_is_zero() {
         let stack: Stack<i64> = Stack::new();
-        assert_eq!(0, stack.size());
+        assert_eq!(0, stack.len());
     }
 
     #[test]
@@ -17,13 +17,13 @@ mod stack {
             stack.push(i);
         }
         assert_eq!(9, *stack.peek().unwrap());
-        assert_eq!(10, stack.size());
+        assert_eq!(10, stack.len());
 
         for _i in 0..10 {
             stack.pop();
         }
 
-        assert_eq!(0, stack.size());
+        assert_eq!(0, stack.len());
     }
 
     #[test]
@@ -42,9 +42,9 @@ mod stack {
         stack.push(2);
         stack.push(3);
 
-        assert_eq!(3, stack.size());
+        assert_eq!(3, stack.len());
         assert_eq!(3, *stack.peek().unwrap());
-        assert_eq!(3, stack.size());
+        assert_eq!(3, stack.len());
 
         assert_eq!(3, stack.pop().unwrap());
         assert_eq!(2, stack.pop().unwrap());

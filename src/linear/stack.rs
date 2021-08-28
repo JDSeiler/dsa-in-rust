@@ -18,7 +18,7 @@ impl<T> Stack<T> {
     }
 
     /// Returns the number of elements on the stack.
-    pub fn size(self: &Self) -> usize {
+    pub fn len(self: &Self) -> usize {
         return self.buf.len();
     }
 
