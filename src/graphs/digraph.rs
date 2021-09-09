@@ -43,8 +43,14 @@ impl<T: Clone + Eq + Hash> DiGraph<T> {
     }
 
     /// Adds a new, unconnected, vertex to the graph
-    pub fn add_vertex(&mut self, node: T) {
-        self.edge_map.insert(node, Vec::new());
+    pub fn add_vertex(&mut self, node: T) -> Result<(), String> {
+        if self.edge_map.contains_key(&node) {
+            // again, proper err type would be better here
+            Err(String::from("Attempted to insert duplicate node"))
+        } else {
+            self.edge_map.insert(node, Vec::new());
+            Ok(())
+        }
     }
 
     /// Returns `true` if the query vertex exists in the graph, `false` otherwise
