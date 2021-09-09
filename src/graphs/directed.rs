@@ -28,15 +28,25 @@ impl<T: Clone + Eq + Hash> DiGraph<T> {
         }
     }
 
-    pub fn add_vertex(self: &mut Self, node: T) {
+    pub fn num_vertices(&self) -> usize {
+        self.edge_map.len()
+    }
+
+    pub fn num_edges(&self) -> usize {
+        self.edge_map.iter().fold(0, |acc, (_node, edges)| {
+            acc + edges.len()
+        })
+    }
+
+    pub fn add_vertex(&mut self, node: T) {
         self.edge_map.insert(node, Vec::new());
     }
 
-    pub fn contains(self: &Self, node: &T) -> bool {
+    pub fn contains(&self, node: &T) -> bool {
         self.edge_map.contains_key(node)
     }
 
-    pub fn are_neighbors(self: &Self, u: &T, v: &T) -> bool {
+    pub fn are_neighbors(&self, u: &T, v: &T) -> bool {
         if let Some(edges) = self.edge_map.get(u) {
             edges.contains(v)
         } else {
@@ -44,13 +54,33 @@ impl<T: Clone + Eq + Hash> DiGraph<T> {
         }
     }
 
-    pub fn neighbors_of(self: &Self, node: &T) -> Option<Iter<T>> {
+    pub fn neighbors_of(&self, node: &T) -> Option<Iter<T>> {
         self.edge_map.get(node).map(|edges| edges.iter())
+    }
+
+    pub fn out_degree(&self, node: &T) -> Option<usize> {
+        self.edge_map.get(node).map(|edges| edges.len())
+    }
+
+    pub fn in_degree(&self, node: &T) -> Option<usize> {
+        // If the target node isn't even in the graph, don't bother checking anything
+        if self.edge_map.get(node).is_none() {
+            None
+        } else {
+            // Otherwise, count up how many times the target node appears in all the edges
+            Some(self.edge_map.iter().fold(0, |acc, (_node, edges)| {
+                if edges.contains(node) {
+                    acc + 1
+                } else {
+                    acc
+                }
+            }))
+        }
     }
 
     // Ideally, use a proper std::Error implementing type
     // Or revert back to &'static str
-    pub fn add_edge(self: &mut Self, u: &T, v: T) -> Result<(), String> {
+    pub fn add_edge(&mut self, u: &T, v: T) -> Result<(), String> {
         if self.edge_map.contains_key(u) {
             // Notes:
             // 1. It is safe to unwrap these values because I'm directly checking
@@ -83,14 +113,14 @@ impl<T: Clone + Eq + Hash> DiGraph<T> {
     }
 
     // Not clear to me if a return value is worthwhile here
-    pub fn remove_edge(self: &mut Self, u: &T, v: &T) {
+    pub fn remove_edge(&mut self, u: &T, v: &T) {
         if let Some(target_edges) = self.edge_map.get_mut(u) {
             DiGraph::remove_by_value(target_edges, v);
         }
     }
 
     // This is a relatively expensive operation: O(V + E)
-    pub fn remove_vertex(self: &mut Self, target: &T) {
+    pub fn remove_vertex(&mut self, target: &T) {
         // First, remove all directed edges going TO the target
         for (_node, edges) in self.edge_map.iter_mut() {
             DiGraph::remove_by_value(edges, target)
