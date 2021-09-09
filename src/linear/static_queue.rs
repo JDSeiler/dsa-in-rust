@@ -25,16 +25,16 @@ impl<T : Default> SQueue<T> {
     }
 
     /// Adds a new item to the rear of this SQueue
-    pub fn enqueue(self: &mut Self, item: T) {
+    pub fn enqueue(&mut self, item: T) {
         self.buf.push(item);
 
         self.rear = self.buf.len() - 1;
-        self.len = self.len + 1;
+        self.len += 1;
     }
 
     /// Removes and returns the element from the front of the SQueue, or None
     /// if the SQueue is empty.
-    pub fn dequeue(self: &mut Self) -> Option<T> {
+    pub fn dequeue(&mut self) -> Option<T> {
         if let Some(v_ref) = self.buf.get_mut(self.front) {
             let v = mem::take(v_ref);
             /* 
@@ -59,8 +59,8 @@ impl<T : Default> SQueue<T> {
                 self.rear = 0;
                 self.len = 0;
             } else {
-                self.front = self.front + 1;
-                self.len = self.len - 1;
+                self.front += 1;
+                self.len -= 1;
             }
 
             Some(v)
@@ -71,18 +71,18 @@ impl<T : Default> SQueue<T> {
 
     /// Returns a reference to the element at the front of the SQueue, but does
     /// not remove it.
-    pub fn peek(self: &Self) -> Option<&T> {
+    pub fn peek(&self) -> Option<&T> {
         self.buf.get(self.front)
     }
 
     /// Returns a reference to the element at the rear of the SQueue, but does
     /// not remove it.
-    pub fn peek_rear(self: &Self) -> Option<&T> {
+    pub fn peek_rear(&self) -> Option<&T> {
         self.buf.get(self.rear)
     }
 
     /// Returns the number of elements in the SQueue
-    pub fn len(self: &Self) -> usize {
+    pub fn len(&self) -> usize {
         self.len
     }
 }

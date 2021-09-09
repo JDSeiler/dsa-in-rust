@@ -19,7 +19,7 @@ impl<T> Stack<T> {
 
     /// Returns the number of elements on the stack.
     pub fn len(&self) -> usize {
-        return self.buf.len();
+        self.buf.len()
     }
 
     /// Adds a new item to the top of the stack
