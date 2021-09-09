@@ -1,1 +1,1 @@
-pub mod directed;
+pub mod digraph;
