@@ -1,6 +1,7 @@
 use std::collections::{HashMap, HashSet};
 use std::hash::Hash;
 use std::slice::Iter;
+use std::fmt::Debug;
 
 /// Very simple DiGraph implementation
 ///
@@ -10,7 +11,10 @@ use std::slice::Iter;
 /// Hopefully this implementation will be updated
 /// as I create more graph algorithms and understand
 /// what is important in a graph data structure.
+/// Notably, this implementation is very space inefficient...
 pub struct DiGraph<T: Clone + Eq + Hash> {
+    // Consider making this <T, Vec<&T>> to save space?
+    // Test first! Refactor later!
     edge_map: HashMap<T, Vec<T>>
 }
 
@@ -27,6 +31,12 @@ impl<T: Clone + Eq + Hash> DiGraph<T> {
         DiGraph {
             edge_map: HashMap::new()
         }
+    }
+
+    /// Prints out the backing HashMap for the DiGraph
+    /// Your node type T must also implement Debug in order to use this function
+    pub fn debug_print(g: DiGraph<T>) where T: Debug {
+        println!("{:#?}", g.edge_map);
     }
 
     /// Returns the number of vertices present in the graph
@@ -101,7 +111,7 @@ impl<T: Clone + Eq + Hash> DiGraph<T> {
 
     /// Adds a directed edge between `u` and `v`. Returns `Ok(())` if the
     /// operation was successful, but Err if `u` does not exist in the graph.
-    pub fn add_edge(&mut self, u: &T, v: T) -> Result<(), String> {
+    pub fn add_edge(&mut self, u: &T, v: &T) -> Result<(), String> {
         // Ideally, use a proper std::Error implementing type
         // Or revert back to &'static str
         if self.edge_map.contains_key(u) {
@@ -112,14 +122,14 @@ impl<T: Clone + Eq + Hash> DiGraph<T> {
             //    working with the borrow checker. The issue is that I'm immutably
             //    checking the contents of the hashmap, then mutably borrowing it
             //    two different times and non of those references can overlap.
-            if !self.edge_map.get(u).unwrap().contains(&v) {
+            if !self.edge_map.contains_key(v) {
                 // We HAVE to clone here because both Vec#push
                 // and add_vertex take ownership of the value.
                 self.edge_map.insert(v.clone(), Vec::new());
             }
 
             let target_edges = self.edge_map.get_mut(u).unwrap();
-            target_edges.push(v);
+            target_edges.push(v.clone());
             Ok(())
         } else {
             Err(String::from("Start vertex of edge not present!"))
