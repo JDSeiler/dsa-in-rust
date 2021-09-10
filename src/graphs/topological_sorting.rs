@@ -3,6 +3,8 @@ use std::{collections::VecDeque, hash::Hash};
 use std::iter::FromIterator;
 use std::fmt::Debug;
 
+/// O(V*E) because of my implementation >:(
+/// Not exactly sure how to make in-degree a linear time operation
 pub fn topological_sort<T: Clone + Eq + Hash + Debug>(g: &mut DiGraph<T>) -> Option<Vec<T>> {
     let mut topological_order: Vec<T> = Vec::new();
     let mut candidates: VecDeque<T> = VecDeque::from_iter(g.get_source_vertices());
