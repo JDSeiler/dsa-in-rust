@@ -173,12 +173,12 @@ impl<T: Clone + Eq + Hash> DiGraph<T> {
     /// Returns all of the vertices in the graph that have an
     /// in-degree of 0.
     ///
-    /// This is an `O(V+E)` operation.
-    pub fn get_source_vertices(&self) -> HashSet<&T> {
+    /// This is an `O(V+E)` operation and clones all keys.
+    pub fn get_source_vertices(&self) -> HashSet<T> {
         // Magic generic method for converting iterators into collections
         // The type &T is significant because we don't want to copy all the keys,
         // nor do we want to take ownership of the keys in the hashmap.
-        let mut vertices: HashSet<&T> = self.edge_map.keys().collect::<HashSet<_>>();
+        let mut vertices: HashSet<T> = self.edge_map.keys().map(|k| k.to_owned()).collect::<HashSet<_>>();
         for (_node, edges) in self.edge_map.iter() {
             for end_vertex in edges {
                 // It is idempotent to remove something not in the set
