@@ -1,6 +1,12 @@
 #[cfg(test)]
 mod lfsr {
     use dsa_in_rust::misc::lfsr::*;
+
+    /*
+    Testing the output bits is trivial for the first 32 of them
+    It'd be better to check state and check generated bits I think
+    */
+
     #[test]
     fn next_bit_correct() {
         let mut l = LFSR::new();
