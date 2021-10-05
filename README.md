@@ -1,3 +1,7 @@
+# NOTE
+This is on hold for now! I need some time to study and practice Rust
+in order to really advance with this, but the semester is just too busy
+for me to spend time on it.
 # Data Structures and Algorithms in Rust
 ## Data Structures
 ### Linear Structures
